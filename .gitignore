@@ -19,3 +19,4 @@ app/lib/
 
 expo-env.d.ts
 # @end expo-cli
+app/lib/supabase.js
