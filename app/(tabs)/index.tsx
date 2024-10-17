@@ -1,50 +1,58 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { Image, StyleSheet, Platform } from "react-native";
+import React from "react";
+import { useRouter } from "expo-router";
+import { HelloWave } from "@/components/PartyWiggle";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedTextInput } from "@/components/ThemedTextInput";
+import { ThemedButton } from "@/components/ThemedButton";
+import { joinWatchParty, setWatchParty } from "../lib/supabase";
+import { generateHexCode, generateNickname } from "../lib/appIdentity";
 
 export default function HomeScreen() {
+  const router = useRouter();
+  async function tryJoinWatchParty() {
+    setWatchParty(await joinWatchParty(text));
+    router.push("./(tabs)/watchParty");
+  }
+  const [text, onChangeText] = React.useState("");
+
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerBackgroundColor={{ light: "#B00326", dark: "#B00326" }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
+          source={require("@/assets/images/jmc-logo.png")}
           style={styles.reactLogo}
         />
-      }>
+      }
+    >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText type="title">Join a watch party!</ThemedText>
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
+        <ThemedText type="subtitle">How to join:</ThemedText>
         <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
+          Copy and paste the code that your host gives you. It should be an
+          8-digit code.
         </ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
+      <ThemedView style={styles.horizontalContainer}>
+        <ThemedTextInput
+          maxLength={8}
+          onChangeText={onChangeText}
+          value={text}
+          onSubmitEditing={tryJoinWatchParty}
+          placeholder="ABCD5678"
+          style={styles.textInput}
+        ></ThemedTextInput>
+        <ThemedButton
+          onPress={tryJoinWatchParty}
+          title="Enter"
+          type="primary"
+        ></ThemedButton>
       </ThemedView>
     </ParallaxScrollView>
   );
@@ -52,8 +60,8 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   stepContainer: {
@@ -61,10 +69,17 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reactLogo: {
-    height: 178,
+    height: 290,
     width: 290,
     bottom: 0,
     left: 0,
-    position: 'absolute',
+    position: "absolute",
+  },
+  horizontalContainer: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  textInput: {
+    flex: 1,
   },
 });
