@@ -35,7 +35,7 @@
         "https://api.github.com/repos/jose-mari-chan/jose-mari-chat/releases"
       );
       response.json().then((res) => {
-        downloadText.textContent = `Download for Android (${res[0].tag_name})`;
+        downloadText.textContent = `Download for Android v${res[0].tag_name}`;
       });
     }
     getLatestVersion();
