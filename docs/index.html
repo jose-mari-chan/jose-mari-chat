@@ -9,13 +9,35 @@
   </head>
   <body>
     <div class="main">
-      <img class="logo" src="assets/jmc-logo.png" />
+      <a
+        class="logo-link"
+        href="https://github.com/jose-mari-chan/jose-mari-chat"
+      >
+        <img class="logo" src="assets/jmc-logo.png" />
+      </a>
+
       <h1>Jose Mari Chat</h1>
       <a
+        id="download-link"
         class="download-link"
         href="https://github.com/jose-mari-chan/jose-mari-chat/releases/latest/download/jmc-release.apk"
-        >Download</a
+        ><img class="android-logo" src="assets/android.png" /><span
+          id="download-text"
+          >Download</span
+        ></a
       >
     </div>
   </body>
+  <script>
+    async function getLatestVersion() {
+      const downloadText = document.getElementById("download-text");
+      const response = await fetch(
+        "https://api.github.com/repos/jose-mari-chan/jose-mari-chat/releases"
+      );
+      response.json().then((res) => {
+        downloadText.textContent = `Download latest for Android (ver. ${res[0].tag_name})`;
+      });
+    }
+    getLatestVersion();
+  </script>
 </html>

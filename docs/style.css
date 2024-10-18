@@ -1,12 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 body {
-  background: linear-gradient(
-    90deg,
-    rgba(242, 115, 115, 0.5) 0%,
-    rgba(201, 80, 58, 0.5) 100%
-  );
-  background-color: #3a2727;
-  background-repeat: no-repeat;
+  background-image: url("assets/background.svg");
+  background-color: #151212;
+  background-repeat: repeat;
   height: 100vh;
   display: flex;
   padding: 0;
@@ -14,6 +10,19 @@ body {
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  animation-name: animateBackground;
+  animation-duration: 8s;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-timing-function: linear;
+}
+@keyframes animateBackground {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 500px;
+  }
 }
 .main {
   font-family: "Poppins", sans-serif;
@@ -24,22 +33,47 @@ body {
   flex-direction: column;
 }
 .logo {
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px #505050 solid;
+  border-radius: 50% 50%;
+}
+.logo:hover {
+  transform: scale(110%);
+  filter: drop-shadow(0 0 0.5rem rgb(188, 39, 69));
+}
+.logo-link {
   width: clamp(100px, 20%, 300px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .download-link {
   background-color: #e4e1ea;
   color: black;
-  padding: 12px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 16px;
   text-decoration: none;
+  width: fit-content;
   font-weight: bold;
   transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
 }
 .download-link:hover {
   background-color: #e3665e;
   color: #e4e1ea;
-  padding: 12px;
-  padding-inline: 16px;
-  border-radius: 12px;
-  text-decoration: none;
+  padding-inline: 24px;
+}
+.android-logo {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  filter: drop-shadow(0.1rem 0.1rem 0.1rem black);
 }
