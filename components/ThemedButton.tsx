@@ -22,7 +22,7 @@ export function ThemedButton({
     {},
     type === "primary" ? "tint" : "background" // Use tint for primary buttons, background for others
   );
-  const textColor = useThemeColor({}, "text"); // Dynamic text color based on theme
+  const textColor = useThemeColor({}, "white"); // Dynamic text color based on theme
 
   return (
     <TouchableOpacity

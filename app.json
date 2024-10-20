@@ -1,23 +1,24 @@
 {
   "expo": {
-    "name": "josemarichat",
+    "name": "Jose Mari Chat",
     "slug": "josemarichat",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/jmc-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/s.png",
+      "image": "./assets/images/jmc-splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.jmc.chat"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/jmc-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.jmc.chat"
@@ -25,7 +26,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/jmc-icon.png"
     },
     "plugins": [
       "expo-router"

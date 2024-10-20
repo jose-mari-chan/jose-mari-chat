@@ -30,7 +30,7 @@ export function ThemedTextInput({
         style,
       ]}
       selectionColor={cursorColor}
-      placeholderTextColor={textColor}
+      placeholderTextColor={textColor + "40"}
       {...rest}
     />
   );

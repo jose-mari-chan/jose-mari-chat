@@ -7,8 +7,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import { ThemedButton } from "@/components/ThemedButton";
-import { joinWatchParty, setWatchParty } from "../lib/supabase";
-import { generateHexCode, generateNickname } from "../lib/appIdentity";
+import { joinWatchParty, setWatchParty } from "../../lib/supabase";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -20,7 +19,7 @@ export default function HomeScreen() {
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: "#B00326", dark: "#B00326" }}
+      headerBackgroundColor={{ light: "#db4d4d", dark: "#db4d4d" }}
       headerImage={
         <Image
           source={require("@/assets/images/jmc-logo.png")}
@@ -69,8 +68,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reactLogo: {
-    height: 290,
-    width: 290,
+    height: 200,
+    width: 200,
     bottom: 0,
     left: 0,
     position: "absolute",

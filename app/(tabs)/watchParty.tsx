@@ -4,8 +4,13 @@ import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import { ThemedView } from "@/components/ThemedView";
-import { getWatchParty, supabase } from "../lib/supabase";
-import { getAppAvatar, getAppId, getAppNickname } from "../lib/appIdentity";
+import { getWatchParty, supabase } from "../../lib/supabase";
+import {
+  getAppAvatar,
+  getAppId,
+  getAppNickname,
+  setAppNickname,
+} from "../../lib/appIdentity";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 interface Message {
@@ -21,15 +26,23 @@ export default function ChatScreen() {
   const [inputValue, setInputValue] = useState<string>("");
   const flatListRef = useRef<FlatList>(null);
   const messageBackgroundColor = useThemeColor({}, "tint");
-  const watchPartyId = getWatchParty()?.watch_party_id; // Fetch the watch party id
+  const watchPartyId = getWatchParty()?.id; // Fetch the watch party id
   const appId = getAppId();
   const appNickname = getAppNickname();
   const appAvatar = getAppAvatar();
 
-  // Fetch initial messages
   const fetchMessages = async () => {
     if (!watchPartyId) return;
 
+    const newMessage: Message = {
+      message_id: "99999999",
+      message_contents:
+        "Use command /nickname or /nn to set your nickname. Let others know who you are!",
+      sender_id: "SYSTEM",
+      sender_nickname: "Jose Mari Chat",
+      sender_avatar:
+        "https://jose-mari-chan.github.io/jose-mari-chat/assets/jmc-logo.png",
+    };
     const { data: fetchedMessages, error } = await supabase
       .from("messages")
       .select("*")
@@ -39,12 +52,33 @@ export default function ChatScreen() {
     if (error) {
       console.error("Error fetching messages:", error);
     } else {
-      setMessages(fetchedMessages || []);
+      setMessages([newMessage, ...fetchedMessages]);
     }
   };
 
-  // Send a new message
   const handleSendMessage = async () => {
+    if (inputValue.startsWith("/nickname ") || inputValue.startsWith("/nn ")) {
+      const newNickname = inputValue.split(" ")[1].trim();
+      if (newNickname.length == 0) {
+        setInputValue("");
+        return;
+      }
+      const { data: newMessage, error } = await supabase
+        .from("messages")
+        .insert([
+          {
+            message_contents: `${getAppNickname()}'s nickname has been set to \"${newNickname}\"`,
+            watch_party_id: watchPartyId,
+            sender_id: "SYSTEM",
+            sender_nickname: "Jose Mari Chat",
+            sender_avatar:
+              "https://jose-mari-chan.github.io/jose-mari-chat/assets/jmc-logo.png",
+          },
+        ]);
+      setAppNickname(newNickname);
+      setInputValue("");
+      return;
+    }
     if (inputValue.trim()) {
       const { data: newMessage, error } = await supabase
         .from("messages")
@@ -66,9 +100,10 @@ export default function ChatScreen() {
     }
   };
 
-  // Set up real-time listener for new messages using the correct syntax
   useEffect(() => {
     if (!watchPartyId) return;
+
+    fetchMessages();
 
     const messageChannel = supabase
       .channel("realtime-messages")
@@ -95,25 +130,27 @@ export default function ChatScreen() {
       )
       .subscribe();
 
-    // Cleanup the subscription when component unmounts
     return () => {
       supabase.removeChannel(messageChannel);
     };
-  }, [watchPartyId]);
-
-  // Fetch initial messages on component mount
-  useEffect(() => {
-    fetchMessages();
   }, [watchPartyId]);
 
   const renderItem = ({ item }: { item: Message }) => (
     <ThemedView
       style={[
         item.sender_id == getAppId() ? styles.you : styles.messageWrapper,
+        item.sender_id == "SYSTEM" ? styles.systemMessage : {},
       ]}
     >
       {item.sender_avatar && (
-        <Image source={{ uri: item.sender_avatar }} style={styles.avatar} />
+        <Image
+          source={{ uri: item.sender_avatar }}
+          style={[
+            item.sender_id == "SYSTEM"
+              ? styles.systemMessageOmit
+              : styles.avatar,
+          ]}
+        />
       )}
       <ThemedView style={styles.messageContainer}>
         <ThemedView
@@ -121,6 +158,7 @@ export default function ChatScreen() {
             item.sender_id == getAppId()
               ? styles.yourHeader
               : styles.messageHeader,
+            item.sender_id == "SYSTEM" ? styles.systemMessageOmit : {},
           ]}
         >
           <ThemedText style={styles.nickname}>
@@ -130,6 +168,7 @@ export default function ChatScreen() {
         <ThemedText
           style={[
             item.sender_id == getAppId() ? styles.yourMessage : styles.message,
+            item.sender_id == "SYSTEM" ? styles.systemMessageContent : {},
           ]}
         >
           {item.message_contents}
@@ -154,7 +193,7 @@ export default function ChatScreen() {
           styles.currentlyWatching,
         ]}
       >
-        <ThemedText style={styles.bold}>
+        <ThemedText style={[styles.bold, styles.whiteText]}>
           Watching "{getWatchParty().watch_args.movie.title}"
         </ThemedText>
       </ThemedView>
@@ -182,6 +221,22 @@ export default function ChatScreen() {
 }
 
 const styles = StyleSheet.create({
+  systemMessage: {
+    opacity: 0.8,
+    justifyContent: "center",
+    alignContent: "center",
+    marginEnd: 0,
+  },
+  systemMessageOmit: {
+    display: "none",
+  },
+  systemMessageContent: {
+    opacity: 0.5,
+    fontSize: 12,
+  },
+  whiteText: {
+    color: "#ECEDEE",
+  },
   you: {
     flexDirection: "row-reverse",
     justifyContent: "flex-start",
@@ -217,16 +272,17 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingHorizontal: 36,
+    paddingHorizontal: 18,
     paddingTop: 48,
     padding: 16,
-    gap: 12,
+    gap: 24,
   },
   list: {
     justifyContent: "flex-start",
   },
   messageContainer: {
     borderRadius: 5,
+    flexShrink: 1,
   },
   messageHeader: {
     flexDirection: "row",
